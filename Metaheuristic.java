@@ -1,5 +1,6 @@
 import javax.xml.transform.Result;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Metaheuristic<S> {
     protected Problem<S> problem;
