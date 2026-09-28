@@ -170,7 +170,7 @@ public class QuadraticKnapsack implements Problem<ArrayList<Integer>>{
             int inserteditem = Jobs;
             for (int i = 0; i < s.size(); i++) {// items in list
                 for (int j = 0; j < Jobs; j++) { // possible items
-                    if (SwapFeasible(s, i, j)) {
+                    if (SwapFeasible(s, s.get(i), j)) {                   // this has been changed because SwapFeasable need the items number to get the weigt, s.get(i) gets the number on placement nr. i
                         tempv = evaluateswap(s, cvalue, s.get(i), j); // Calculate value of new solution
                         if (tempv > bestvalue) { // if swap leads to better solution than current best
                             bestvalue = tempv;
@@ -203,4 +203,9 @@ public class QuadraticKnapsack implements Problem<ArrayList<Integer>>{
             System.out.println(" Solution  Weight: "+ solutionWeight(s));
             System.out.println(" Solution  Value: "+ evaluate(s));
         }
+
+    @Override
+    public ArrayList<Integer> copy(ArrayList<Integer> s) {
+        return new ArrayList<>(s);
+    }
 }
