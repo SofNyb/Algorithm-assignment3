@@ -28,4 +28,6 @@ public interface Problem<S> {
     double evaluateInsertitem(S s, double cvalue, int additem);
 
     void PrintSolution(S solution);
+
+    S copy(S bestSol);
 }
