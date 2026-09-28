@@ -30,7 +30,14 @@ void main() {
     // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
     Problem<ArrayList<Integer>> QK = new QuadraticKnapsack(p, value, weight, 110);
     Metaheuristic<ArrayList<Integer>> LS = new Metaheuristic<>(QK);
+    Results<ArrayList<Integer>> res = LS.IteratedLocalSearch(5.0, 1000, 3);
     Results<ArrayList<Integer>> HC = LS.Hillclimber(2, 1);
+
+    System.out.println("--- ILS ---");
+    QK.PrintSolution(res.finalSolution);
+    res.PrintBest();
+
+    System.out.println("--- Hillclimber ---");
     QK.PrintSolution(HC.finalSolution);
     HC.PrintBest();
 }
