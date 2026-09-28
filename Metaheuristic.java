@@ -12,7 +12,7 @@ public class Metaheuristic<S> {
 
     public Results<S> IteratedLocalSearch(double timelimits, int iterationlimit, int seed) {
         final long starttime = System.nanoTime();
-        S bestSol = problem.generateInitialSolution(seed);
+        S bestSol = problem.generateInitialSolution(seed);          // s
         Results<S> ResILS = new Results("ILS" + seed);
         ResILS.putSolution(bestSol);
         int ite = 0;
