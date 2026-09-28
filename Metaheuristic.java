@@ -14,13 +14,47 @@ public class Metaheuristic<S> {
         final long starttime = System.nanoTime();
         S bestSol = problem.generateInitialSolution(seed);          // s
         Results<S> ResILS = new Results("ILS" + seed);
-        ResILS.putSolution(bestSol);
         int ite = 0;
-        double tempv = problem.evaluate(bestSol);
-        double bestvalue = tempv;
-        ResILS.putbest(tempv, System.nanoTime() - starttime, ite);
+        Random rand = new Random(seed);
 
-        /* Write you method here */
+        // s := Local-Search(s)
+        while (problem.bestswap(bestSol)) { }
+        double bestvalue = problem.evaluate(bestSol);               // f(s)
+        ResILS.putSolution(bestSol);
+        ResILS.putbest(bestvalue, System.nanoTime() - starttime, ite);
+
+        while (ite < iterationlimit
+                && (System.nanoTime() - starttime) / 1e9 < timelimits) {
+
+            // s' := Mutate(s), makes a copi
+            S newSol = problem.copy(bestSol);
+
+            int removes = 1 + rand.nextInt(2);                      // remove 1-2
+            for (int r = 0; r < removes; r++) {
+                int size = problem.getSizeSolution(newSol);
+                if (size > 0) {
+                    problem.removeItemFromSolution(newSol, rand.nextInt(size));
+                }
+            }
+            for (int t = 0; t < 5; t++) {                           // inset at random
+                problem.InsertItemToSolution(newSol, rand.nextInt(problem.getInstanceSize()));
+            }
+
+            // s' := Local-Search(s')
+            while (problem.bestswap(newSol)) { }
+
+            double tempv = problem.evaluate(newSol);                // f(s') after evaluating s'
+
+            // if f(s') > f(s) then s := s'   (maximizing!)
+            if (tempv > bestvalue) {
+                bestSol = newSol;
+                bestvalue = tempv;
+                ResILS.putSolution(bestSol);
+                ResILS.putbest(bestvalue, System.nanoTime() - starttime, ite);
+            }
+
+            ite++;                                                  // n := n + 1
+        }
 
         return ResILS;
     }
