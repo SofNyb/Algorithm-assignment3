@@ -48,7 +48,7 @@ public class Metaheuristic<S> {
         return ResILS;
     }
 
-    public Results<S> SimulatedAnnealing(double timelimits, int iterationlimit, int seed) {
+    public Results<S> SimulatedAnnealing(double timelimits, int iterationlimit, int seed, double T0, double cooling) {
         final long starttime = System.nanoTime();
         S bestSol = problem.generateInitialSolution(seed);
         double tempv = problem.evaluate(bestSol);
@@ -64,8 +64,7 @@ public class Metaheuristic<S> {
 
         double bestvalue = tempv;
 
-        double T = 50;                                              // start temperature
-        double cooling = 0.99;                                      // cooling down
+        double T = T0;
 
         while (ite < iterationlimit
                 && (System.nanoTime() - starttime) / 1e9 < timelimits) {
