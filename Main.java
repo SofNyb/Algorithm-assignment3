@@ -37,7 +37,7 @@ void main() {
     res.PrintBest();
 
     System.out.println("--- SA ---");
-    Results<ArrayList<Integer>> SA = LS.SimulatedAnnealing(5.0, 1000, 1, 50.0, 0.99);
+    Results<ArrayList<Integer>> SA = LS.SimulatedAnnealing(5.0, 500, 1, 50.0, 0.95);
     QK.PrintSolution(SA.finalSolution);
     SA.PrintBest();
 
