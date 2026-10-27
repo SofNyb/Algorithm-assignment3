@@ -45,4 +45,6 @@ void main() {
     Results<ArrayList<Integer>> HC = LS.Hillclimber(2, 1);
     QK.PrintSolution(HC.finalSolution);
     HC.PrintBest();
+
+    Tuning.tuneSA(LS, 595);
 }
