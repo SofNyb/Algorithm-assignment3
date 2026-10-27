@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public interface Problem<S> {
     int getInstanceSize();
@@ -34,4 +35,6 @@ public interface Problem<S> {
     boolean bestadd (S s);
 
     boolean localStep (S s);
+
+    boolean randomMoves(S s, Random rand);
 }
