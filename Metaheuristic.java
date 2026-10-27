@@ -26,26 +26,15 @@ public class Metaheuristic<S> {
         while (ite < iterationlimit
                 && (System.nanoTime() - starttime) / 1e9 < timelimits) {
 
-            // s' := Mutate(s), makes a copi
-            S newSol = problem.copy(bestSol);
 
-            int removes = 1 + rand.nextInt(2);                      // remove 1-2
-            for (int r = 0; r < removes; r++) {
-                int size = problem.getSizeSolution(newSol);
-                if (size > 0) {
-                    problem.removeItemFromSolution(newSol, rand.nextInt(size));
-                }
-            }
-            for (int t = 0; t < 5; t++) {                           // inset at random
-                problem.InsertItemToSolution(newSol, rand.nextInt(problem.getInstanceSize()));
-            }
-
-            // s' := Local-Search(s')
+            // new random start solution instead of mutating the best solution
+            S newSol = problem.generateInitialSolution(rand.nextInt());
+            
+            // local search on the new solution
             while (problem.bestswap(newSol)) { }
+            double tempv = problem.evaluate(newSol);
 
-            double tempv = problem.evaluate(newSol);                // f(s') after evaluating s'
-
-            // if f(s') > f(s) then s := s'   (maximizing!)
+            // keep it if it's better than the best solution found so far
             if (tempv > bestvalue) {
                 bestSol = newSol;
                 bestvalue = tempv;
@@ -64,6 +53,10 @@ public class Metaheuristic<S> {
         S bestSol = problem.generateInitialSolution(seed);
         double tempv = problem.evaluate(bestSol);
         int ite = 0;
+        Random rand = new Random(seed);
+        S currSol = problem.copy(bestSol) ;
+        double currValue = problem.evaluate(currSol);
+
         //Start results lists
         Results<S> ResSA = new Results("SA" + seed);
         ResSA.putSolution(bestSol);
@@ -71,13 +64,52 @@ public class Metaheuristic<S> {
 
         double bestvalue = tempv;
 
-        /* Write you method here */
+        double T = 50;                                              // start temperature
+        double cooling = 0.99;                                      // cooling down
+
+        while (ite < iterationlimit
+                && (System.nanoTime() - starttime) / 1e9 < timelimits) {
+
+            // neighbour move on a copy of currSol
+            S newSol = problem.copy(currSol);
+            int removes = 1 + rand.nextInt(2);               // remove 1-2
+            for (int r = 0; r < removes; r++) {
+                int size = problem.getSizeSolution(newSol);
+                if (size > 0) {
+                    problem.removeItemFromSolution(newSol, rand.nextInt(size));
+                }
+            }
+            for (int t = 0; t < 5; t++) {                           // insert at random
+                problem.InsertItemToSolution(newSol, rand.nextInt(problem.getInstanceSize()));
+            }
+
+            double newValue = problem.evaluate(newSol);
+            double delta = newValue - currValue;                    // positive = neighbour is better
+
+            // accept if better, or with probability exp(delta / T) if worse
+            if (delta > 0 || rand.nextDouble() < Math.exp(delta / T)) {
+                currSol = newSol;
+                currValue = newValue;
+
+                // new best? save a COPY so later changes don't affect it
+                if (currValue > bestvalue) {
+                    bestSol = problem.copy(currSol);
+                    bestvalue = currValue;
+                    ResSA.putSolution(bestSol);
+                    ResSA.putbest(bestvalue, System.nanoTime() - starttime, ite);
+                }
+            }
+
+
+            T = T * cooling;
+            ite++;
+        }
 
         return ResSA;
     }
 
     public Results<S> Hillclimber(double timelimits, int seed) {
-//Start time
+        //Start time
         final long starttime = System.nanoTime();
         S bestSol = problem.generateInitialSolution(seed);
         Results<S> HillRes = new Results<S>("Hill" + seed);
@@ -94,7 +126,7 @@ public class Metaheuristic<S> {
             if (!problem.bestswap(currentSol)) {
                 break;
             }
-//          New best found
+            // New best found
             HillRes.putbest(problem.evaluate(currentSol), System.nanoTime() - starttime, ite);
         }
         HillRes.putSolution(currentSol);
