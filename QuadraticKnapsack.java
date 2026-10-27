@@ -204,6 +204,33 @@ public class QuadraticKnapsack implements Problem<ArrayList<Integer>>{
             System.out.println(" Solution  Value: "+ evaluate(s));
         }
 
+        @Override 
+        public boolean bestadd(ArrayList<Integer> s) {
+            double cvalue = evaluate(s);
+            double bestvalue= cvalue;
+            int bestItem = -1;
+            for (int j = 0; j < Jobs; j++) {
+                if (!s.contains(j) && isFeasible(s, j)) {
+                    double v = evaluateInsertitem(s, cvalue, j);
+                    if (v > bestvalue) {
+                        bestvalue = v;
+                        bestItem = j;
+                    }
+                }
+            }
+            if (bestItem >= 0) {
+                s.add(bestItem);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean localStep(ArrayList<Integer> s) {
+            if (bestadd(s)) return true;
+            return bestswap(s);
+        }
+
     @Override
     public ArrayList<Integer> copy(ArrayList<Integer> s) {
         return new ArrayList<>(s);
