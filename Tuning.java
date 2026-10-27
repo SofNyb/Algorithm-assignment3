@@ -19,7 +19,7 @@ public class Tuning {
     static void tuneSA(Metaheuristic<ArrayList<Integer>> LS, double optimum) {
         double[] T0s       = {10, 50, 100, 200};
         double[] coolings  = {0.9, 0.95, 0.99, 0.999};
-        int[]    iterList  = {500, 1000, 5000};
+        int[]    iterList  = {20,50,100,200,500};
         int      nSeeds    = 30;
 
         try (FileWriter fw = new FileWriter("SA_tuning.csv")) {
