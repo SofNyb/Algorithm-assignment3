@@ -18,7 +18,7 @@ public class Metaheuristic<S> {
         Random rand = new Random(seed);
 
         // s := Local-Search(s)
-        while (problem.bestswap(bestSol)) { }
+        while (problem.localStep(bestSol)) { }
         double bestvalue = problem.evaluate(bestSol);               // f(s)
         ResILS.putSolution(bestSol);
         ResILS.putbest(bestvalue, System.nanoTime() - starttime, ite);
@@ -31,7 +31,7 @@ public class Metaheuristic<S> {
             S newSol = problem.generateInitialSolution(rand.nextInt());
             
             // local search on the new solution
-            while (problem.bestswap(newSol)) { }
+            while (problem.localStep(newSol)) { }
             double tempv = problem.evaluate(newSol);
 
             // keep it if it's better than the best solution found so far
@@ -122,7 +122,7 @@ public class Metaheuristic<S> {
         //Start Local search
         while (System.nanoTime() - starttime < (timelimits * 1000000000)) {
             ite++;
-            if (!problem.bestswap(currentSol)) {
+            if (!problem.localStep(currentSol)) {
                 break;
             }
             // New best found
