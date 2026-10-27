@@ -33,5 +33,5 @@ public interface Problem<S> {
 
     boolean bestadd (S s);
 
-    Boolean localStep (S s);
+    boolean localStep (S s);
 }
