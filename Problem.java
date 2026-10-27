@@ -30,4 +30,8 @@ public interface Problem<S> {
     void PrintSolution(S solution);
 
     S copy(S bestSol);
+
+    boolean bestadd (S s);
+
+    Boolean localStep (S s);
 }
