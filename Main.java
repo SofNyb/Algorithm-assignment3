@@ -46,5 +46,5 @@ void main() {
     QK.PrintSolution(HC.finalSolution);
     HC.PrintBest();
 
-    Tuning.tuneSA(LS, 595);
+    Tuning.tuneSA(LS, 378);
 }
