@@ -69,18 +69,9 @@ public class Metaheuristic<S> {
         while (ite < iterationlimit
                 && (System.nanoTime() - starttime) / 1e9 < timelimits) {
 
-            // neighbour move on a copy of currSol
             S newSol = problem.copy(currSol);
-            int removes = 1 + rand.nextInt(2);               // remove 1-2
-            for (int r = 0; r < removes; r++) {
-                int size = problem.getSizeSolution(newSol);
-                if (size > 0) {
-                    problem.removeItemFromSolution(newSol, rand.nextInt(size));
-                }
-            }
-            for (int t = 0; t < 5; t++) {                           // insert at random
-                problem.InsertItemToSolution(newSol, rand.nextInt(problem.getInstanceSize()));
-            }
+            int tries = 0;
+            while (!problem.randomMoves(newSol, rand) && tries++ < 20) {} // retry if the move was not possible
 
             double newValue = problem.evaluate(newSol);
             double delta = newValue - currValue;                    // positive = neighbour is better
