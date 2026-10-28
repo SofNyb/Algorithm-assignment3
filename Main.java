@@ -49,5 +49,5 @@ void main() {
     System.out.println("--- Tuning SA ---");
     Tuning.tuneSA(LS, 595);
 
-    Runner.runAll(LS, 30, 50.0, 0.95, 1000, 500);
+    Runner.runAll(LS, 30, 100.0, 0.999, 5000, 500);
 }
