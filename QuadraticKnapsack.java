@@ -231,6 +231,28 @@ public class QuadraticKnapsack implements Problem<ArrayList<Integer>>{
             return bestswap(s);
         }
 
+        // one small random move: add an item, drop an item, or swap an item
+        @Override 
+        public boolean randomMoves(ArrayList<Integer> s, Random rand) {
+            int type = rand.nextInt(3);                                     // 0: add, 1: remove, 2: swap
+            if (type == 0) {                                                // add
+                return InsertItemToSolution(s, rand.nextInt(Jobs));
+                } else if (type == 1) {                                     // remove
+                if (!s.isEmpty())  return false;
+                    return removeItemFromSolution(s, rand.nextInt(s.size()));
+            } else {                                                        // swap
+                if (!s.isEmpty()) return false;
+                int i = rand.nextInt(s.size());
+                int j = rand.nextInt(Jobs);
+                if (SwapFeasible(s, s.get(i), j)) {
+                    s.set(i, j);
+                    return true;
+                }
+                return false;
+                
+            }
+        }
+
     @Override
     public ArrayList<Integer> copy(ArrayList<Integer> s) {
         return new ArrayList<>(s);
