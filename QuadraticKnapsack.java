@@ -238,10 +238,10 @@ public class QuadraticKnapsack implements Problem<ArrayList<Integer>>{
             if (type == 0) {                                                // add
                 return InsertItemToSolution(s, rand.nextInt(Jobs));
                 } else if (type == 1) {                                     // remove
-                if (!s.isEmpty())  return false;
+                if (s.isEmpty()) return false;
                     return removeItemFromSolution(s, rand.nextInt(s.size()));
             } else {                                                        // swap
-                if (!s.isEmpty()) return false;
+                if (s.isEmpty()) return false;
                 int i = rand.nextInt(s.size());
                 int j = rand.nextInt(Jobs);
                 if (SwapFeasible(s, s.get(i), j)) {
