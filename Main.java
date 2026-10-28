@@ -46,5 +46,8 @@ void main() {
     QK.PrintSolution(HC.finalSolution);
     HC.PrintBest();
 
-    Tuning.tuneSA(LS, 378);
+    System.out.println("--- Tuning SA ---");
+    Tuning.tuneSA(LS, 595);
+
+    Runner.runAll(LS, 30, 50.0, 0.95, 1000, 500);
 }
