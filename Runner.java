@@ -52,4 +52,44 @@ public class Runner {
                 + Tuning.mean(tTotal) + "," + Tuning.std(tTotal) + "\n");
         System.out.printf("%s: mean=%.1f std=%.1f%n", name, Tuning.mean(vals), Tuning.std(vals));
     }
+
+    static void runTimed(Metaheuristic<ArrayList<Integer>> LS, int nSeeds,
+                     double T0, double Tend) {
+    double[] limits = {2.0, 0.1};
+    try (FileWriter fw = new FileWriter("TimedRuns.csv");
+         FileWriter fs = new FileWriter("TimedSummary.csv")) {
+        fw.write("algorithm,seed,value,timeToBestMs,bestIter,totalTimeMs\n");
+        fs.write("algorithm,meanValue,stdValue,meanTimeToBestMs,stdTimeToBestMs,"
+                + "meanBestIter,stdBestIter,meanTotalMs,stdTotalMs\n");
+        for (double lim : limits) {
+            runOne("Hillclimber_" + lim + "s", nSeeds, seed -> LS.Hillclimber(lim, seed), fw, fs);
+            runOne("ILS_" + lim + "s", nSeeds,
+                   seed -> LS.IteratedLocalSearch(lim, Integer.MAX_VALUE, seed), fw, fs);
+            runOne("SA_" + lim + "s", nSeeds,
+                   seed -> LS.SimulatedAnnealingTimed(lim, seed, T0, Tend), fw, fs);
+        }
+    } catch (IOException e) { e.printStackTrace(); }
+}
+
+static void runNeighborhoods(Metaheuristic<ArrayList<Integer>> LS, QuadraticKnapsack QK,
+                              int nSeeds, double[] limits, double T0, double Tend) {
+    String[] names = {"addDropSwap", "swapOnly", "addDropOnly"};
+    try (FileWriter fw = new FileWriter("NeighborRuns.csv");
+         FileWriter fs = new FileWriter("NeighborSummary.csv")) {
+        fw.write("algorithm,seed,value,timeToBestMs,bestIter,totalTimeMs\n");
+        fs.write("algorithm,meanValue,stdValue,meanTimeToBestMs,stdTimeToBestMs,"
+                + "meanBestIter,stdBestIter,meanTotalMs,stdTotalMs\n");
+        for (double lim : limits) {
+            final double fl = lim;
+            for (int ms = 0; ms <= 2; ms++) {
+                QK.moveSet = ms;
+                runOne("SA_" + names[ms] + "_" + lim + "s", nSeeds,
+                       seed -> LS.SimulatedAnnealingTimed(fl, seed, T0, Tend), fw, fs);
+            }
+        }
+        QK.moveSet = 0;
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 }

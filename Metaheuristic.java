@@ -74,7 +74,7 @@ public class Metaheuristic<S> {
             while (!problem.randomMoves(newSol, rand) && tries++ < 20) {} // retry if the move was not possible
 
             double newValue = problem.evaluate(newSol);
-            double delta = newValue - currValue;                    // positive = neighbour is better
+            double delta = newValue - currValue;                    // positive = neighbor is better
 
             // accept if better, or with probability exp(delta / T) if worse
             if (delta > 0 || rand.nextDouble() < Math.exp(delta / T)) {
@@ -97,6 +97,48 @@ public class Metaheuristic<S> {
 
         return ResSA;
     }
+
+    public Results<S> SimulatedAnnealingTimed(double timelimit, int seed, double T0, double Tend) {
+    final long starttime = System.nanoTime();
+    S bestSol = problem.generateInitialSolution(seed);
+    double tempv = problem.evaluate(bestSol);
+    int ite = 0;
+    Random rand = new Random(seed);
+    S currSol = problem.copy(bestSol);
+    double currValue = problem.evaluate(currSol);
+
+    Results<S> ResSA = new Results("SAT" + seed);
+    ResSA.putSolution(bestSol);
+    ResSA.putbest(tempv, System.nanoTime() - starttime, ite);
+
+    double bestvalue = tempv;
+
+    double frac;   // how much of the time has passed, from 0 to 1
+    while ((frac = (System.nanoTime() - starttime) / 1e9 / timelimit) < 1.0) {
+
+        double T = T0 * Math.pow(Tend / T0, frac);   // replaces T = T * cooling
+
+        S newSol = problem.copy(currSol);
+        int tries = 0;
+        while (!problem.randomMoves(newSol, rand) && tries++ < 20) {}
+
+        double newValue = problem.evaluate(newSol);
+        double delta = newValue - currValue;
+
+        if (delta > 0 || rand.nextDouble() < Math.exp(delta / T)) {
+            currSol = newSol;
+            currValue = newValue;
+            if (currValue > bestvalue) {
+                bestSol = problem.copy(currSol);
+                bestvalue = currValue;
+                ResSA.putSolution(bestSol);
+                ResSA.putbest(bestvalue, System.nanoTime() - starttime, ite);
+            }
+        }
+        ite++;
+    }
+    return ResSA;
+}
 
     public Results<S> Hillclimber(double timelimits, int seed) {
         //Start time

@@ -8,6 +8,7 @@ public class QuadraticKnapsack implements Problem<ArrayList<Integer>>{
         int[] weight;
         int Jobs;
         int weightLimit;
+        int moveSet = 0; // 0 = add/drop/swap, 1 = swap only, 2 = add/drop only
 
         int[][] getp(){return p;}
         int[] getValue(){return value;}
@@ -235,6 +236,8 @@ public class QuadraticKnapsack implements Problem<ArrayList<Integer>>{
         @Override 
         public boolean randomMoves(ArrayList<Integer> s, Random rand) {
             int type = rand.nextInt(3);                                     // 0: add, 1: remove, 2: swap
+            if (moveSet == 1) type = 2;                                     // swap only
+            else if (moveSet == 2) type = rand.nextInt(2);                  // add or remove only
             if (type == 0) {                                                // add
                 return InsertItemToSolution(s, rand.nextInt(Jobs));
                 } else if (type == 1) {                                     // remove

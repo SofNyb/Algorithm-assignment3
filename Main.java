@@ -28,16 +28,22 @@ void main() {
 
     //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
     // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-    Problem<ArrayList<Integer>> QK = new QuadraticKnapsack(p, value, weight, 110);
+    QuadraticKnapsack QK = new QuadraticKnapsack(p, value, weight, 110);
     Metaheuristic<ArrayList<Integer>> LS = new Metaheuristic<>(QK);
 
+    for (int w = 0; w < 20; w++) {
+        LS.IteratedLocalSearch(2.0, 500, 0);
+        LS.SimulatedAnnealing(60.0, 5000, 0, 100.0, 0.999);
+        LS.SimulatedAnnealingTimed(0.01, 0, 100.0, 1.0);   
+    }
+
     System.out.println("--- ILS ---");
-    Results<ArrayList<Integer>> res = LS.IteratedLocalSearch(5.0, 1000, 1);
+    Results<ArrayList<Integer>> res = LS.IteratedLocalSearch(2.0, 500, 1);
     QK.PrintSolution(res.finalSolution);
     res.PrintBest();
 
     System.out.println("--- SA ---");
-    Results<ArrayList<Integer>> SA = LS.SimulatedAnnealing(5.0, 500, 1, 50.0, 0.95);
+    Results<ArrayList<Integer>> SA = LS.SimulatedAnnealing(60.0, 5000, 1, 100.0, 0.999);
     QK.PrintSolution(SA.finalSolution);
     SA.PrintBest();
 
@@ -46,8 +52,12 @@ void main() {
     QK.PrintSolution(HC.finalSolution);
     HC.PrintBest();
 
-    System.out.println("--- Tuning SA ---");
-    Tuning.tuneSA(LS, 595);
+    // System.out.println("--- Tuning SA ---");
+    // Tuning.tuneSA(LS, 595);
 
-    Runner.runAll(LS, 30, 100.0, 0.999, 5000, 500);
+    // Runner.runAll(LS, 30, 100.0, 0.999, 5000, 500);
+
+    // Runner.runTimed(LS, 10, 100.0, 1.0);
+
+    Runner.runNeighborhoods(LS, QK, 30, new double[]{0.005, 0.02}, 100.0, 1.0);
 }
